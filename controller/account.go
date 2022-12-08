@@ -21,7 +21,7 @@ func InsertAccount(AccountService account.AccountServiceInterface) gin.HandlerFu
 			return
 		}
 
-		_, err = AccountService.Insert(postData)
+		response, err := AccountService.Insert(postData)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -29,6 +29,6 @@ func InsertAccount(AccountService account.AccountServiceInterface) gin.HandlerFu
 
 		log.Debug().Msg("end-point GET /accounts finished")
 
-		ctx.JSON(http.StatusOK, gin.H{})
+		ctx.JSON(http.StatusOK, gin.H{"id": response.ID, "document_number": response.DocumentNumber})
 	}
 }
