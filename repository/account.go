@@ -9,6 +9,7 @@ import (
 
 type AccountInterface interface {
 	Insert(account entity.Account) (entity.Account, error)
+	Find(accountID uint64) (entity.Account, error)
 }
 
 type accountRepositoryStruct struct {
@@ -27,4 +28,15 @@ func (a *accountRepositoryStruct) Insert(account entity.Account) (entity.Account
 	}
 
 	return account, nil
+}
+
+func (a *accountRepositoryStruct) Find(accountID uint64) (entity.Account, error) {
+	var accountSearch entity.Account
+
+	err := a.DbConn.Where("id = ?", accountID).First(&accountSearch).Error
+	if err != nil {
+		return accountSearch, err
+	}
+
+	return accountSearch, nil
 }
