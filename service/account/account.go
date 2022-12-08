@@ -9,6 +9,7 @@ import (
 
 type AccountServiceInterface interface {
 	Insert(account entity.Account) (entity.Account, error)
+	Get(accountID uint64) (entity.Account, error)
 }
 
 type AccountService struct {
@@ -30,4 +31,15 @@ func (a *AccountService) Insert(account entity.Account) (entity.Account, error) 
 	}
 
 	return response, nil
+}
+
+func (a *AccountService) Get(accountID uint64) (entity.Account, error) {
+	log.Debug().Msg("Getting account")
+
+	account, err := a.AccountRepository.Find(accountID)
+	if err != nil {
+		return entity.Account{}, err
+	}
+
+	return account, nil
 }
