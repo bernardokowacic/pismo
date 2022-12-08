@@ -9,7 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func InsertAccount(AccountService account.AccountServiceInterface) gin.HandlerFunc {
+func InsertAccount(accountService account.AccountServiceInterface) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		log.Debug().Msg("end-point POST /accounts requested")
 
@@ -21,7 +21,7 @@ func InsertAccount(AccountService account.AccountServiceInterface) gin.HandlerFu
 			return
 		}
 
-		response, err := AccountService.Insert(postData)
+		response, err := accountService.Insert(postData)
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -29,6 +29,28 @@ func InsertAccount(AccountService account.AccountServiceInterface) gin.HandlerFu
 
 		log.Debug().Msg("end-point GET /accounts finished")
 
-		ctx.JSON(http.StatusOK, gin.H{"id": response.ID, "document_number": response.DocumentNumber})
+		ctx.JSON(http.StatusOK, response)
+	}
+}
+
+func FindAccount(accountService account.AccountServiceInterface) gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		log.Debug().Msg("end-point GET /account requested")
+
+		var requestedAccount entity.Account
+		err := ctx.ShouldBindUri(&requestedAccount)
+		if err != nil {
+			log.Info().Msg(err.Error())
+			ctx.JSON(http.StatusNotAcceptable, gin.H{"message": err.Error()})
+			return
+		}
+
+		response, err := accountService.Get(requestedAccount.ID)
+		if err != nil {
+			ctx.JSON(http.StatusNotAcceptable, gin.H{"message": err.Error()})
+			return
+		}
+
+		ctx.JSON(http.StatusOK, response)
 	}
 }
