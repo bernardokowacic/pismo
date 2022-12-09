@@ -3,13 +3,13 @@ package controller
 import (
 	"net/http"
 	"pismo/entity"
-	"pismo/service/account"
+	"pismo/service"
 
 	"github.com/gin-gonic/gin"
 	"github.com/rs/zerolog/log"
 )
 
-func InsertAccount(accountService account.AccountServiceInterface) gin.HandlerFunc {
+func InsertAccount(accountService service.AccountServiceInterface) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		log.Debug().Msg("end-point POST /accounts requested")
 
@@ -33,7 +33,7 @@ func InsertAccount(accountService account.AccountServiceInterface) gin.HandlerFu
 	}
 }
 
-func FindAccount(accountService account.AccountServiceInterface) gin.HandlerFunc {
+func FindAccount(accountService service.AccountServiceInterface) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		log.Debug().Msg("end-point GET /account requested")
 
