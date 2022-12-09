@@ -2,13 +2,13 @@ package routes
 
 import (
 	"pismo/controller"
-	"pismo/service/account"
+	"pismo/service"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetRoutes(router *gin.Engine, AccountService account.AccountServiceInterface) {
-	router.POST("/accounts", controller.InsertAccount(AccountService))
-	router.GET("/account/:accountId", controller.FindAccount(AccountService))
-	// router.POST("/Transactions", controller.Insert(AccountService))
+func GetRoutes(router *gin.Engine, accountService service.AccountServiceInterface, transactionService service.TransactionServiceInterface) {
+	router.POST("/accounts", controller.InsertAccount(accountService))
+	router.GET("/account/:accountId", controller.FindAccount(accountService))
+	router.POST("/transactions", controller.InsertTransaction(transactionService))
 }
