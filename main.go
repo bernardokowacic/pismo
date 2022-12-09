@@ -6,7 +6,7 @@ import (
 	"pismo/api"
 	"pismo/database"
 	"pismo/repository"
-	"pismo/service/account"
+	"pismo/service"
 
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
@@ -33,10 +33,12 @@ func main() {
 	database.Migrate(dbConn)
 	database.Seed(dbConn)
 
-	accountRepository := repository.NewRepository(dbConn)
-	accountService := account.NewService(accountRepository)
+	accountRepository := repository.NewAccountRepository(dbConn)
+	transactionRepository := repository.NewTransactionRepository(dbConn)
+	accountService := service.NewService(accountRepository)
+	transactionService := service.NewTransactionService(transactionRepository, accountService)
 
-	router := api.Start(accountService)
+	router := api.Start(accountService, transactionService)
 	log.Info().Msg("API Started")
 	router.Run()
 }
