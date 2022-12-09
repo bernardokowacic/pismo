@@ -35,8 +35,9 @@ func main() {
 
 	accountRepository := repository.NewAccountRepository(dbConn)
 	transactionRepository := repository.NewTransactionRepository(dbConn)
+	operationTypeRepository := repository.NewOperationTypeRepository(dbConn)
 	accountService := service.NewService(accountRepository)
-	transactionService := service.NewTransactionService(transactionRepository, accountService)
+	transactionService := service.NewTransactionService(transactionRepository, operationTypeRepository, accountRepository)
 
 	router := api.Start(accountService, transactionService)
 	log.Info().Msg("API Started")

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"errors"
 	"pismo/entity"
 	"pismo/repository"
 
@@ -12,22 +13,41 @@ type TransactionServiceInterface interface {
 }
 
 type transactiontService struct {
-	TransactionRepository repository.TransactionInterface
-	AccountService        AccountServiceInterface
+	TransactionRepository   repository.TransactionInterface
+	OperationTypeRepository repository.OperationTypeInterface
+	accountRepository       repository.AccountInterface
 }
 
-func NewTransactionService(transactionRepository repository.TransactionInterface, accountService AccountServiceInterface) TransactionServiceInterface {
+func NewTransactionService(
+	transactionRepository repository.TransactionInterface,
+	operationTypeRepository repository.OperationTypeInterface,
+	accountRepository repository.AccountInterface,
+) TransactionServiceInterface {
 	return &transactiontService{
-		TransactionRepository: transactionRepository,
-		AccountService:        accountService,
+		TransactionRepository:   transactionRepository,
+		accountRepository:       accountRepository,
+		OperationTypeRepository: operationTypeRepository,
 	}
 }
 
 func (t *transactiontService) Insert(transaction entity.Transaction) (entity.Transaction, error) {
 	log.Debug().Msg("Creating new transaction")
 
+	_, err := t.accountRepository.Find(transaction.AccountID)
+	if err != nil {
+		log.Warn().Msg(err.Error())
+		return entity.Transaction{}, errors.New("account not found")
+	}
+
+	_, err = t.OperationTypeRepository.Find(transaction.OperationTypeID)
+	if err != nil {
+		log.Warn().Msg(err.Error())
+		return entity.Transaction{}, errors.New("operation type not found")
+	}
+
 	response, err := t.TransactionRepository.Insert(transaction)
 	if err != nil {
+		log.Warn().Msg(err.Error())
 		return entity.Transaction{}, err
 	}
 

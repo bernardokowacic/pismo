@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"math"
 	"net/http"
 	"pismo/entity"
 	"pismo/service"
@@ -20,6 +21,7 @@ func InsertTransaction(transactionService service.TransactionServiceInterface) g
 			ctx.JSON(http.StatusNotAcceptable, gin.H{"message": err.Error()})
 			return
 		}
+		postData.Amount = math.Round(postData.Amount*100) / 100 // round to nearest
 
 		response, err := transactionService.Insert(postData)
 		if err != nil {
