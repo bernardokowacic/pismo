@@ -16,7 +16,7 @@ type accountRepositoryStruct struct {
 	DbConn *gorm.DB
 }
 
-func NewRepository(dbConn *gorm.DB) AccountInterface {
+func NewAccountRepository(dbConn *gorm.DB) AccountInterface {
 	return &accountRepositoryStruct{DbConn: dbConn}
 }
 
