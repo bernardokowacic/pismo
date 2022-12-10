@@ -51,6 +51,8 @@ func FindAccount(accountService service.AccountServiceInterface) gin.HandlerFunc
 			return
 		}
 
+		log.Debug().Msg("end-point GET /account finished")
+
 		ctx.JSON(http.StatusOK, response)
 	}
 }
