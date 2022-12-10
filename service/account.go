@@ -16,7 +16,7 @@ type AccountService struct {
 	AccountRepository repository.AccountInterface
 }
 
-func NewService(accountRepository repository.AccountInterface) AccountServiceInterface {
+func NewAccountService(accountRepository repository.AccountInterface) AccountServiceInterface {
 	return &AccountService{
 		AccountRepository: accountRepository,
 	}
