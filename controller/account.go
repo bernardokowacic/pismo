@@ -47,7 +47,7 @@ func FindAccount(accountService service.AccountServiceInterface) gin.HandlerFunc
 
 		response, err := accountService.Get(requestedAccount.ID)
 		if err != nil {
-			ctx.JSON(http.StatusNotAcceptable, gin.H{"message": err.Error()})
+			ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}
 
