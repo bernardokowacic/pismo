@@ -87,3 +87,48 @@ func TestInsertAccountWithServiceError(t *testing.T) {
 
 	assert.Equal(t, http.StatusBadRequest, w.Code)
 }
+
+func TestFindAccount(t *testing.T) {
+	accountService := &serviceMock.AccountServiceInterface{}
+	transactionService := &serviceMock.TransactionServiceInterface{}
+	router := api.Start(accountService, transactionService)
+
+	response := entity.Account{
+		ID:             1,
+		DocumentNumber: "12345678900",
+	}
+
+	accountService.On("Get", uint64(1)).Return(response, nil)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/account/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+}
+
+func TestFindAccountWithBindingError(t *testing.T) {
+	accountService := &serviceMock.AccountServiceInterface{}
+	transactionService := &serviceMock.TransactionServiceInterface{}
+	router := api.Start(accountService, transactionService)
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/account/'1'", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusNotAcceptable, w.Code)
+}
+
+func TestFindAccountWithServiceError(t *testing.T) {
+	accountService := &serviceMock.AccountServiceInterface{}
+	transactionService := &serviceMock.TransactionServiceInterface{}
+	router := api.Start(accountService, transactionService)
+
+	accountService.On("Get", uint64(1)).Return(entity.Account{}, errors.New("error"))
+
+	w := httptest.NewRecorder()
+	req, _ := http.NewRequest(http.MethodGet, "/account/1", nil)
+	router.ServeHTTP(w, req)
+
+	assert.Equal(t, http.StatusBadRequest, w.Code)
+}
