@@ -3,6 +3,7 @@ package repository
 import (
 	"pismo/entity"
 
+	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
@@ -23,6 +24,7 @@ func (a *operationTypeRepositoryStruct) Find(operationTypeID uint64) (entity.Ope
 
 	err := a.DbConn.Where("id = ?", operationTypeID).First(&operationTypeSearch).Error
 	if err != nil {
+		log.Error().Msg(err.Error())
 		return operationTypeSearch, err
 	}
 

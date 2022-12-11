@@ -12,7 +12,7 @@ import (
 
 func InsertTransaction(transactionService service.TransactionServiceInterface) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
-		log.Debug().Msg("end-point POST /accounts requested")
+		log.Debug().Msg("end-point POST /transactions requested")
 
 		var postData entity.Transaction
 		err := ctx.ShouldBindJSON(&postData)
@@ -25,11 +25,12 @@ func InsertTransaction(transactionService service.TransactionServiceInterface) g
 
 		response, err := transactionService.Insert(postData)
 		if err != nil {
+			log.Error().Msg(err.Error())
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
 
-		log.Debug().Msg("end-point GET /accounts finished")
+		log.Debug().Msg("end-point POST /transactions finished")
 
 		ctx.JSON(http.StatusOK, response)
 	}

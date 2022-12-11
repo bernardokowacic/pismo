@@ -35,6 +35,7 @@ func (a *accountRepositoryStruct) Find(accountID uint64) (entity.Account, error)
 
 	err := a.DbConn.Where("id = ?", accountID).First(&accountSearch).Error
 	if err != nil {
+		log.Error().Msg(err.Error())
 		return accountSearch, err
 	}
 

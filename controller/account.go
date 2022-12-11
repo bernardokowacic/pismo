@@ -23,6 +23,7 @@ func InsertAccount(accountService service.AccountServiceInterface) gin.HandlerFu
 
 		response, err := accountService.Insert(postData)
 		if err != nil {
+			log.Error().Msg(err.Error())
 			ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
@@ -40,13 +41,14 @@ func FindAccount(accountService service.AccountServiceInterface) gin.HandlerFunc
 		var requestedAccount entity.Account
 		err := ctx.ShouldBindUri(&requestedAccount)
 		if err != nil {
-			log.Info().Msg(err.Error())
+			log.Warn().Msg(err.Error())
 			ctx.JSON(http.StatusNotAcceptable, gin.H{"message": err.Error()})
 			return
 		}
 
 		response, err := accountService.Get(requestedAccount.ID)
 		if err != nil {
+			log.Error().Msg(err.Error())
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 			return
 		}

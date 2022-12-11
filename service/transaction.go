@@ -35,19 +35,19 @@ func (t *transactiontService) Insert(transaction entity.Transaction) (entity.Tra
 
 	_, err := t.accountRepository.Find(transaction.AccountID)
 	if err != nil {
-		log.Warn().Msg(err.Error())
+		log.Warn().Msg("account not found")
 		return entity.Transaction{}, errors.New("account not found")
 	}
 
 	_, err = t.OperationTypeRepository.Find(transaction.OperationTypeID)
 	if err != nil {
-		log.Warn().Msg(err.Error())
+		log.Warn().Msg("operation type not found")
 		return entity.Transaction{}, errors.New("operation type not found")
 	}
 
 	response, err := t.TransactionRepository.Insert(transaction)
 	if err != nil {
-		log.Warn().Msg(err.Error())
+		log.Error().Msg(err.Error())
 		return entity.Transaction{}, err
 	}
 
