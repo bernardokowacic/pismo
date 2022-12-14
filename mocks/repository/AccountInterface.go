@@ -55,6 +55,20 @@ func (_m *AccountInterface) Insert(account entity.Account) (entity.Account, erro
 	return r0, r1
 }
 
+// UpdateBalance provides a mock function with given fields: accountID, newBalance
+func (_m *AccountInterface) UpdateBalance(accountID uint64, newBalance float64) error {
+	ret := _m.Called(accountID, newBalance)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(uint64, float64) error); ok {
+		r0 = rf(accountID, newBalance)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 type mockConstructorTestingTNewAccountInterface interface {
 	mock.TestingT
 	Cleanup(func())
