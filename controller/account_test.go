@@ -20,19 +20,23 @@ func TestInsertAccount(t *testing.T) {
 	router := api.Start(accountService, transactionService)
 
 	args := struct {
-		DocumentNumber string `json:"document_number"`
+		DocumentNumber       string  `json:"document_number"`
+		AvailableCreditLimit float64 `json:"available_credit_limit"`
 	}{
-		DocumentNumber: "12345678900",
+		DocumentNumber:       "12345678900",
+		AvailableCreditLimit: 5000.00,
 	}
 	body, _ := json.Marshal(args)
 
 	request := entity.Account{
-		DocumentNumber: args.DocumentNumber,
+		DocumentNumber:       args.DocumentNumber,
+		AvailableCreditLimit: args.AvailableCreditLimit,
 	}
 
 	response := entity.Account{
-		ID:             1,
-		DocumentNumber: args.DocumentNumber,
+		ID:                   1,
+		DocumentNumber:       args.DocumentNumber,
+		AvailableCreditLimit: args.AvailableCreditLimit,
 	}
 
 	accountService.On("Insert", request).Return(response, nil)
@@ -69,14 +73,17 @@ func TestInsertAccountWithServiceError(t *testing.T) {
 	router := api.Start(accountService, transactionService)
 
 	args := struct {
-		DocumentNumber string `json:"document_number"`
+		DocumentNumber       string  `json:"document_number"`
+		AvailableCreditLimit float64 `json:"available_credit_limit"`
 	}{
-		DocumentNumber: "12345678900",
+		DocumentNumber:       "12345678900",
+		AvailableCreditLimit: 5000.00,
 	}
 	body, _ := json.Marshal(args)
 
 	request := entity.Account{
-		DocumentNumber: args.DocumentNumber,
+		DocumentNumber:       args.DocumentNumber,
+		AvailableCreditLimit: args.AvailableCreditLimit,
 	}
 
 	accountService.On("Insert", request).Return(entity.Account{}, errors.New("error"))
