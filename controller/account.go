@@ -38,7 +38,9 @@ func FindAccount(accountService service.AccountServiceInterface) gin.HandlerFunc
 	return func(ctx *gin.Context) {
 		log.Debug().Msg("end-point GET /account requested")
 
-		var requestedAccount entity.Account
+		requestedAccount := struct {
+			ID uint64 `uri:"accountId" binding:"required"`
+		}{}
 		err := ctx.ShouldBindUri(&requestedAccount)
 		if err != nil {
 			log.Warn().Msg(err.Error())
