@@ -10,6 +10,7 @@ import (
 type AccountInterface interface {
 	Insert(account entity.Account) (entity.Account, error)
 	Find(accountID uint64) (entity.Account, error)
+	UpdateBalance(accountID uint64, newBalance float64) error
 }
 
 type accountRepositoryStruct struct {
@@ -40,4 +41,13 @@ func (a *accountRepositoryStruct) Find(accountID uint64) (entity.Account, error)
 	}
 
 	return accountSearch, nil
+}
+
+func (a *accountRepositoryStruct) UpdateBalance(accountID uint64, newBalance float64) error {
+	err := a.DbConn.Model(&entity.Account{}).Where("id = ?", accountID).Update("available_creadit_limit", newBalance).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
