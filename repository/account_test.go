@@ -151,3 +151,71 @@ func TestFindWithError(t *testing.T) {
 		t.Errorf("there were unfulfilled expectations: %s", err)
 	}
 }
+
+func TestUpdateBalance(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	dialector := postgres.New(postgres.Config{
+		DSN:                  "sqlmock_db_0",
+		DriverName:           "postgres",
+		Conn:                 db,
+		PreferSimpleProtocol: true,
+	})
+	gdb, err := gorm.Open(dialector, &gorm.Config{})
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub gorm connection", err)
+	}
+
+	sqlUpdate := `Update "accounts" set available_creadit_limit = $1`
+	mock.ExpectBegin()
+	mock.ExpectQuery(sqlUpdate).WithArgs(5000.00).WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	mock.ExpectCommit()
+
+	repository := repository.NewAccountRepository(gdb)
+
+	_, err = repository.Find(uint64(1))
+	if err == nil {
+		t.Errorf("an error was expected: %s", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err == nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
+
+func TestUpdateBalanceWithError(t *testing.T) {
+	db, mock, err := sqlmock.New()
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub database connection", err)
+	}
+	defer db.Close()
+	dialector := postgres.New(postgres.Config{
+		DSN:                  "sqlmock_db_0",
+		DriverName:           "postgres",
+		Conn:                 db,
+		PreferSimpleProtocol: true,
+	})
+	gdb, err := gorm.Open(dialector, &gorm.Config{})
+	if err != nil {
+		t.Fatalf("an error '%s' was not expected when opening a stub gorm connection", err)
+	}
+
+	sqlUpdate := `Update "accounts" set available_creadit_limit = $1`
+	mock.ExpectBegin()
+	mock.ExpectQuery(sqlUpdate).WithArgs("5000.00").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	mock.ExpectCommit()
+
+	repository := repository.NewAccountRepository(gdb)
+
+	_, err = repository.Find(uint64(1))
+	if err == nil {
+		t.Errorf("an error was expected: %s", err)
+	}
+
+	if err := mock.ExpectationsWereMet(); err == nil {
+		t.Errorf("there were unfulfilled expectations: %s", err)
+	}
+}
