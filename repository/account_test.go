@@ -29,13 +29,14 @@ func TestInsert(t *testing.T) {
 
 	sqlInsert := `INSERT INTO "accounts" (.+) RETURNING`
 	mock.ExpectBegin()
-	mock.ExpectQuery(sqlInsert).WithArgs("12345678900").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
+	mock.ExpectQuery(sqlInsert).WithArgs("12345678900", 5000.00).WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
 	mock.ExpectCommit()
 
 	repository := repository.NewAccountRepository(gdb)
 
 	account := entity.Account{
-		DocumentNumber: "12345678900",
+		DocumentNumber:       "12345678900",
+		AvailableCreditLimit: 5000.00,
 	}
 
 	_, err = repository.Insert(account)
@@ -73,7 +74,8 @@ func TestInsertWithError(t *testing.T) {
 	repository := repository.NewAccountRepository(gdb)
 
 	account := entity.Account{
-		DocumentNumber: "12345678900",
+		DocumentNumber:       "12345678900",
+		AvailableCreditLimit: 5000.00,
 	}
 
 	_, err = repository.Insert(account)
@@ -104,7 +106,7 @@ func TestFind(t *testing.T) {
 	}
 
 	sql := `SELECT (.+) FROM "accounts" WHERE (.+) ORDER BY "accounts"."id" LIMIT 1`
-	mock.ExpectQuery(sql).WithArgs(1).WillReturnRows(sqlmock.NewRows([]string{"id", "document_number"}).AddRow(1, "12345678900"))
+	mock.ExpectQuery(sql).WithArgs(1).WillReturnRows(sqlmock.NewRows([]string{"id", "document_number", "available_creadit_limit"}).AddRow(1, "12345678900", 5000.00))
 
 	repository := repository.NewAccountRepository(gdb)
 
